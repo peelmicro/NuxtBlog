@@ -1,12 +1,13 @@
 <template>
   <div class="admin-post-page">
     <section class="update-form">
-      <AdminPostForm :post="loadedPost"/>
+      <AdminPostForm :post="loadedPost" @submit="onSubmitted"/>
     </section>
   </div>
 </template>
 
 <script>
+import axios from "axios"
 import AdminPostForm from "@/components/Admin/AdminPostForm"
 
 export default {
@@ -14,14 +15,23 @@ export default {
   components: {
     AdminPostForm
   },
-  data() {
-    return {
-      loadedPost: {
-        author: 'Juan',
-        title: 'My awesome post',
-        content: 'Super cool!',
-        thumbnailLink: 'https://investorplace.com/wp-content/uploads/2017/06/techmsn4.jpg'
-      }
+  asyncData(context) {
+    return axios.get('https://nuxt-blog-b3292.firebaseio.com/posts/' 
+      + context.params.postId 
+      + ".json" )
+      .then( response => {
+        return {
+          loadedPost: {...response.data, id: context.params.postId}
+        }
+      })
+      .catch( error => context.error(error))
+  },
+  methods: {
+    onSubmitted(editedPost) {
+      this.$store.dispatch('editPost', editedPost)
+        .then(() => {
+          this.$router.push('/admin')
+        })
     }
   }
 }
