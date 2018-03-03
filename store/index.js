@@ -1,5 +1,4 @@
 import Vuex from 'vuex'
-import axios from 'axios'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -20,11 +19,12 @@ const createStore = () => {
     },
     actions: {
       nuxtServerInit(vuexContext, context) {
-        return axios.get('https://nuxt-blog-b3292.firebaseio.com/posts.json')
-          .then(response => {
+        return context.app.$axios
+          .$get('/posts.json')
+          .then(data => {
             const postsArray = [];
-            for(const key in response.data) {
-              postsArray.push({ ...response.data[key], id: key})
+            for(const key in data) {
+              postsArray.push({ ...data[key], id: key})
             }
             vuexContext.commit('setPosts', postsArray)
           })
@@ -35,15 +35,16 @@ const createStore = () => {
           ...post, 
           updatedDate: new Date() 
         }
-        return axios
-          .post('https://nuxt-blog-b3292.firebaseio.com/posts.json', createdPost)
-          .then(result => {
-            vuexContext.commit('addPost', { ...createdPost, id: result.data.name })          
+        return this.$axios
+          .$post('/posts.json', createdPost)
+          .then(data => {
+            vuexContext.commit('addPost', { ...createdPost, id: data.name })          
           })
           .catch(error => context.error(error))        
       },
       editPost(vuexContext, editedPost) {
-        return axios.put('https://nuxt-blog-b3292.firebaseio.com/posts/'
+        return this.$axios
+          .$put(process.env.baseUrl + '/posts/'
           + editedPost.id 
           + ".json", 
         editedPost)
