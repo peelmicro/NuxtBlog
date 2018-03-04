@@ -112,7 +112,7 @@ const createStore = () => {
           token = jwt.split('=')[1]
           tokenExpiration = jwtExpiration.split('=')[1]
           
-        } else {
+        } else if (process.Client) {
           token = localStorage.getItem('token')
           tokenExpiration = localStorage.getItem('tokenExpiration')
         }

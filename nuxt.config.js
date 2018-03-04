@@ -1,5 +1,6 @@
 const pkg = require('./package')
 const bodyParser = require('body-parser')
+const axios = require('axios')
 
 module.exports = {
   mode: 'universal',
@@ -80,7 +81,22 @@ module.exports = {
   serverMiddleware: [ // Any express code that will be executed before rendering
     bodyParser.json(),
     '~/api'
-  ]
+  ],
+  generate: {
+    routes: function() {
+      return axios.get('https://nuxt-blog-b3292.firebaseio.com/posts.json')
+        .then(res => {
+          const routes = []
+          for(const key in res.data) {
+            routes.push({
+              route: "/posts/" + key,
+              payload: {postData: res.data[key]}
+            })
+          }
+          return routes
+        })
+    }
+  }
   //,
   // router: {
   // middleware: 'log'
