@@ -1,4 +1,5 @@
 const pkg = require('./package')
+const bodyParser = require('body-parser')
 
 module.exports = {
   mode: 'universal',
@@ -75,7 +76,11 @@ module.exports = {
   transition: {
     name: 'fade',
     mode: 'out-in'
-  }
+  },
+  serverMiddleware: [ // Any express code that will be executed before rendering
+    bodyParser.json(),
+    '~/api'
+  ]
   //,
   // router: {
   // middleware: 'log'

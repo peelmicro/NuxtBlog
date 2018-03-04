@@ -16,6 +16,8 @@
     "@nuxtjs/axios": "^5.0.1",
     "ajv": "^6.0.0",
     "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "js-cookie": "^2.2.0",
     "nuxt": "^1.0.0"
   },
